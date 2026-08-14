@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.DS_Store
+**/.DS_Store
+.env
+**/.env
+!.env.example
+!**/.env.example
+A1_A2_CORE.md
+API_DOCS.md
+README.MD
