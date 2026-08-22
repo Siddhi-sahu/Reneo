@@ -1,5 +1,6 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express';
 
+//to add status code
 export class ApiError extends Error {
   statusCode: number;
 

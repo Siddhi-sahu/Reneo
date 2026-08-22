@@ -2,6 +2,7 @@ import { Response, NextFunction } from 'express';
 import { createUserSupabaseClient } from '../config/supabase';
 import { AuthRequest, Profile } from '../types';
 
+//verifies the token, loads the user + profile, attaches them to req
 export const protect = async (
     req: AuthRequest,
     res: Response,
@@ -14,11 +15,11 @@ export const protect = async (
         return;
     }
 
-  try {
+    try {
     const accessToken = authHeader.split(' ')[1];
     const supabase = createUserSupabaseClient(accessToken);
 
-        const {
+    const {
         data: { user },
         error: userError,
     } = await supabase.auth.getUser(accessToken);
@@ -29,8 +30,8 @@ export const protect = async (
     }
 
     const { data: profile, error: profileError } = await supabase
-      .from('profiles')
-      .select('id, full_name, role, created_at, updated_at')
+        .from('profiles')
+        .select('id, full_name, role, created_at, updated_at')
         .eq('id', user.id)
         .single<Profile>();
 
@@ -46,11 +47,12 @@ export const protect = async (
     req.user = { id: user.id, email: user.email, role: profile.role };
 
     next();
-  } catch (error) {
-    next(error);
-  }
+    } catch (error) {
+        next(error);
+    }
 };
 
+//role-gate middlewares simple
 export const sellerOnly = (req: AuthRequest, res: Response, next: NextFunction): void => {
     if (req.user?.role !== 'SELLER') {
         res.status(403).json({ success: false, message: 'Seller access required' });
@@ -61,10 +63,10 @@ export const sellerOnly = (req: AuthRequest, res: Response, next: NextFunction):
 };
 
 export const customerOnly = (req: AuthRequest, res: Response, next: NextFunction): void => {
-  if (req.user?.role !== 'CUSTOMER') {
-    res.status(403).json({ success: false, message: 'Customer access required' });
-        return;
-    }
+    if (req.user?.role !== 'CUSTOMER') {
+        res.status(403).json({ success: false, message: 'Customer access required' });
+            return;
+        }
 
-  next();
+    next();
 };

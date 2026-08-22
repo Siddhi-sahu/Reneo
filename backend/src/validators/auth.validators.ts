@@ -1,5 +1,6 @@
 import { body } from 'express-validator';
 
+//array of middlewares
 export const registerValidator = [
   body('full_name')
     .optional()

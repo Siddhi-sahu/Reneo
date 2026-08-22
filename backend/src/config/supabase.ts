@@ -1,5 +1,6 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
+//helper func
 const requiredEnv = (name: string): string => {
   const value = process.env[name];
   if (!value) {
