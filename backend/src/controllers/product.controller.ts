@@ -42,9 +42,28 @@ export const addProduct = asyncHandler<AuthRequest>(async(req, res) => {
 
 });
 
-export const getProducts = async(req:any, res:any) =>{
-    //query db and get products
+export const listProducts = asyncHandler<AuthRequest>(async(req, res) =>{
+    const storeId = await getOwnStoreId(req);
 
-    // supabase.
+    const {data: products, error} = await req.supabase!.from('products').select('*').eq('store_id', storeId).order('created_at', { ascending: false });
 
-}
+    if (error){
+        throw new ApiError(400, error.message);
+    };
+
+    res.status(200).json({ success: true, data: products});
+
+});
+
+export const getProduct = asyncHandler<AuthRequest>(async(req, res)=>{
+    const storeId = await getOwnStoreId(req);
+    const {id} = req.params;
+
+    const {data:product, error} = await req.supabase!.from('products').select('*').eq('id', id).eq('store_id', storeId).single();
+
+    if(error || !product){
+        throw new ApiError(404, 'Product not found');
+    };
+
+    res.status(200).json({success: true, data: product});
+});

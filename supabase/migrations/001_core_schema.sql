@@ -1,5 +1,6 @@
 create extension if not exists pgcrypto;
 
+-- Role Definition 
 create type public.user_role as enum ('SELLER', 'CUSTOMER');
 create type public.product_status as enum ('ACTIVE', 'ARCHIVED');
 create type public.order_status as enum ('PENDING', 'CONFIRMED', 'CANCELLED');
